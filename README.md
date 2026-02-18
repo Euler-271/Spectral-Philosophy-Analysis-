@@ -2,7 +2,7 @@
 
 A deterministic, local-model research system for analyzing philosophical assumption structures in discourse. This system integrates Wittgenstein-inspired language-game detection, information geometry on simplex-valued sentence distributions, polarity vector-field analysis, and spectral graph diagnostics.
 
-![Graph Visualization](https://via.placeholder.com/800x400?text=Spectral+Graph+Visualization+Placeholder)
+![Graph Visualization](docs/images/spectral_header.png)
 
 ## Features
 
