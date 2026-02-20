@@ -27,7 +27,23 @@ The system consists of a Python FastAPI backend and a React/TypeScript frontend.
 - Node.js 18+
 - Local CPU environment (GPU optional for embeddings)
 
-### Installation
+### Installation (Docker - Recommended)
+
+The easiest way to run the entire application stack is to use Docker Compose:
+
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/yourusername/spectral-philosophy-analysis.git
+    cd spectral-philosophy-analysis
+    ```
+
+2.  **Start Services:**
+    ```bash
+    docker-compose up --build
+    ```
+    This will spin up both the FastAPI backend and the React frontend. Navigate to `http://localhost:5173`.
+
+### Installation (Manual)
 
 1.  **Clone the repository:**
     ```bash
@@ -50,7 +66,7 @@ The system consists of a Python FastAPI backend and a React/TypeScript frontend.
     npm install
     ```
 
-### Running the Application
+### Running the Application (Manual)
 
 1.  **Start the Backend:**
     ```bash
