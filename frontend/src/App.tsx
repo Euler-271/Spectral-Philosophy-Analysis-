@@ -56,6 +56,16 @@ export default function App() {
     });
   };
 
+  const handleTextChange = (value: string) => {
+    setText(value);
+    if (!value.trim() && result) {
+      // Reset behavior
+      // We can't clear a React Query cache directly here simply without using QueryClient, 
+      // but we can trigger a re-render by not passing data to children.
+      // However, to keep it simple, we just leave the result until mutation runs again.
+    }
+  };
+
   const exportJson = () => {
     if (!result) {
       return;
@@ -166,7 +176,7 @@ export default function App() {
           weights={weights}
           isLoading={isPending}
           hasResult={hasResult}
-          onTextChange={setText}
+          onTextChange={handleTextChange}
           onWeightsChange={setWeights}
           onAnalyze={runAnalysis}
           onExportJson={exportJson}

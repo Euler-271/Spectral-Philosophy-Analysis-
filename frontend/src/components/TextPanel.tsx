@@ -64,6 +64,27 @@ export function TextPanel(props: TextPanelProps) {
         placeholder="Paste discourse for analysis..."
       />
 
+      <div className="preset-row">
+        <button
+          className="preset-pill"
+          onClick={() => onTextChange("All scientific models are simplifications of reality. Therefore, explanation should prioritize causal mechanisms over surface correlations. Yet social categories are often constructed through institutional discourse.")}
+        >
+          Preset: Realism
+        </button>
+        <button
+          className="preset-pill"
+          onClick={() => onTextChange("Policy decisions must optimize outcomes, but persons also possess intrinsic worth. If agency is illusory, moral responsibility becomes conceptually unstable.")}
+        >
+          Preset: Duty
+        </button>
+        <button
+          className="preset-pill clear-btn"
+          onClick={() => onTextChange("")}
+        >
+          Clear
+        </button>
+      </div>
+
       <label className="field-label" htmlFor="upload">
         Upload .txt
       </label>

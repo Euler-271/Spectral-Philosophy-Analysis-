@@ -93,13 +93,6 @@ export const GraphPanel = forwardRef<SVGSVGElement, GraphPanelProps>(function Gr
     // Clear previous elements
     svg.selectAll('*').remove();
 
-    // Re-setup standard definitions
-    const defs = svg.append('defs');
-    const glow = defs.append('filter').attr('id', 'node-glow').attr('height', '220%').attr('width', '220%');
-    glow.append('feGaussianBlur').attr('stdDeviation', '3.2').attr('result', 'coloredBlur');
-    const merge = glow.append('feMerge');
-    merge.append('feMergeNode').attr('in', 'coloredBlur');
-    merge.append('feMergeNode').attr('in', 'SourceGraphic');
 
     const nodes: SimNode[] = graph.nodes.map((node) => ({
       id: node.id,
@@ -163,9 +156,8 @@ export const GraphPanel = forwardRef<SVGSVGElement, GraphPanelProps>(function Gr
       .append('circle')
       .attr('r', (d) => 5 + d.centrality * 12)
       .attr('fill', (d) => nodeColor(d))
-      .attr('stroke', '#0F1117')
-      .attr('stroke-width', 1.2)
-      .style('filter', (d) => (d.centrality > 0.22 ? 'url(#node-glow)' : 'none'))
+      .attr('stroke', 'var(--bg)')
+      .attr('stroke-width', 1.5)
       .style('cursor', 'grab')
       .call(
         d3
@@ -230,7 +222,17 @@ export const GraphPanel = forwardRef<SVGSVGElement, GraphPanelProps>(function Gr
   return (
     <section className="panel panel-center" ref={containerRef}>
       <div className="panel-header">Assumption Graph</div>
-      {!graph ? <div className="placeholder">Run analysis to generate discourse graph.</div> : null}
+      {!graph && (
+        <div className="empty-state">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+            <circle cx="12" cy="5" r="3"></circle>
+            <line x1="12" y1="22" x2="12" y2="8"></line>
+            <path d="M5 12H2a10 10 0 0 0 20 0h-3"></path>
+          </svg>
+          <p>Ready for analysis</p>
+          <span>Select a preset or input text to populate the discourse graph.</span>
+        </div>
+      )}
       <svg ref={mergedRef} className="graph-canvas" />
     </section>
   );
@@ -238,39 +240,39 @@ export const GraphPanel = forwardRef<SVGSVGElement, GraphPanelProps>(function Gr
 
 function nodeColor(node: SimNode): string {
   if (node.kind === 'language_game') {
-    return '#00D4FF';
+    return 'var(--color-cyan)';
   }
   if (node.kind === 'polarity') {
-    return node.id.endsWith('_pos') ? '#FF5D5D' : '#4ADE80';
+    return node.id.endsWith('_pos') ? 'var(--color-red)' : 'var(--color-green)';
   }
   if (node.kind === 'assumption') {
     if (node.label.startsWith('ontological')) {
-      return '#3B82F6';
+      return 'var(--color-blue)';
     }
     if (node.label.startsWith('normative')) {
-      return '#F59E0B';
+      return 'var(--color-amber)';
     }
-    return '#A8B3CF';
+    return 'var(--accent-dim)';
   }
-  return '#8B949E';
+  return 'var(--text-muted)';
 }
 
 function edgeColor(relation: string): string {
   if (relation === 'contradicts') {
-    return '#FF7B72';
+    return 'var(--color-red)';
   }
   if (relation === 'depends_on') {
-    return '#F59E0B';
+    return 'var(--color-amber)';
   }
   if (relation === 'derived_from') {
-    return '#58A6FF';
+    return 'var(--color-blue)';
   }
-  return '#6EE7FF';
+  return 'var(--border-focus)';
 }
 
 function trimLabel(label: string): string {
-  if (label.length <= 24) {
+  if (label.length <= 32) {
     return label;
   }
-  return `${label.slice(0, 21)}...`;
+  return `${label.slice(0, 29)}...`;
 }
