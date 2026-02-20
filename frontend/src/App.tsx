@@ -1,4 +1,6 @@
 import { useMemo, useRef, useState } from 'react';
+import { useMutation } from '@tanstack/react-query';
+import toast from 'react-hot-toast';
 
 import { analyzeText } from './api';
 import { GraphPanel } from './components/GraphPanel';
@@ -30,31 +32,28 @@ If agency is illusory, moral responsibility becomes conceptually unstable.`;
 export default function App() {
   const [text, setText] = useState<string>(SAMPLE_TEXT);
   const [weights, setWeights] = useState<AnalysisWeights>(DEFAULT_WEIGHTS);
-  const [result, setResult] = useState<AnalyzeResponse>();
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string>();
 
   const graphRef = useRef<SVGSVGElement | null>(null);
+
+  const { data: result, mutate, isPending, error } = useMutation({
+    mutationFn: analyzeText,
+    onError: (err) => {
+      toast.error(err instanceof Error ? err.message : 'Analysis failed.');
+    },
+    onSuccess: () => {
+      toast.success('Analysis complete!');
+    }
+  });
 
   const hasResult = Boolean(result);
   const sentences = useMemo(() => result?.sentences ?? [], [result]);
 
-  const runAnalysis = async () => {
-    setLoading(true);
-    setError(undefined);
-    try {
-      const payload = {
-        text,
-        weights,
-        config: DEFAULT_CONFIG
-      };
-      const next = await analyzeText(payload);
-      setResult(next);
-    } catch (analysisError) {
-      setError(analysisError instanceof Error ? analysisError.message : 'Analysis failed.');
-    } finally {
-      setLoading(false);
-    }
+  const runAnalysis = () => {
+    mutate({
+      text,
+      weights,
+      config: DEFAULT_CONFIG
+    });
   };
 
   const exportJson = () => {
@@ -116,7 +115,7 @@ export default function App() {
       await new Promise<void>((resolve, reject) => {
         image.onload = () => resolve();
         image.onerror = () => reject(new Error('Could not render graph snapshot.'));
-        image.src = url;
+        image.src = url as string;
       });
 
       const viewBox = svg.viewBox.baseVal;
@@ -141,7 +140,7 @@ export default function App() {
       }
       downloadBlob('graph_snapshot.png', pngBlob, 'image/png', true);
     } catch (snapshotError) {
-      setError(snapshotError instanceof Error ? snapshotError.message : 'Graph snapshot export failed.');
+      toast.error(snapshotError instanceof Error ? snapshotError.message : 'Graph snapshot export failed.');
     } finally {
       if (url) {
         URL.revokeObjectURL(url);
@@ -159,13 +158,13 @@ export default function App() {
         </p>
       </header>
 
-      {error ? <div className="error-banner">{error}</div> : null}
+      {error ? <div className="error-banner">{error instanceof Error ? error.message : String(error)}</div> : null}
 
       <main className="top-grid">
         <TextPanel
           text={text}
           weights={weights}
-          isLoading={loading}
+          isLoading={isPending}
           hasResult={hasResult}
           onTextChange={setText}
           onWeightsChange={setWeights}

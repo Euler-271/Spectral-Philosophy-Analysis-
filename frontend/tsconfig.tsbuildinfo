@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/api.ts","./src/main.tsx","./src/setupfiles.ts","./src/types.ts","./src/__tests__/textpanel.test.tsx","./src/components/graphpanel.tsx","./src/components/heatmappanel.tsx","./src/components/metricspanel.tsx","./src/components/textpanel.tsx"],"version":"5.9.3"}
